@@ -27,19 +27,21 @@
 				<!--いいね機能-->
 				<td>
 					<% if @book.favorited_by?(current_user) %>
-					  <%= link_to book_favorites_path(@book), method: :delete do %>
-					    <i class="fa fa-heart" aria-hidden="true" style="color: red;"></i>
-					    <%= @book.favorites.count %>
-					  <% end %>
+					<%= link_to book_favorites_path(@book), method: :delete do %>
+					<i class="fa fa-heart" aria-hidden="true" style="color: red;"></i>
+					<%= @book.favorites.count %>
+					<% end %>
 					<% else %>
-					  <%= link_to book_favorites_path(@book), method: :post do %>
-					    <i class="fa fa-heart-o" aria-hidden="true"></i>
-					    <%= @book.favorites.count %>
-					  <% end %>
+					<%= link_to book_favorites_path(@book), method: :post do %>
+					<i class="fa fa-heart-o" aria-hidden="true"></i>
+					<%= @book.favorites.count %>
+					<% end %>
 					<% end %>
 				</td>
 				<!--いいね機能-->
 
+        <td><%= link_to "#{@book.book_comments.count} コメント", book_path(@book.id) %></td>
+        
 				<td><% if @book.user == current_user %>
 					<%= link_to "Edit",edit_book_path(@book), class: "btn-sm btn-success edit_book_#{@book.id}" %>
 					<% end %>
@@ -49,6 +51,46 @@
 					<% end %></td>
 				</tr>
 			</table>
+
+			<!--新規コメント機能-->
+			<%= form_for [@book, @commentnew] do |f| %>
+
+			  <% if flash[:danger] %>
+    <% flash.each do |message_type, messages| %>
+      <h4><%= flash[:danger].count %>errors prohibited this book from being saved:</h4>
+      <% messages.each do |message| %>
+        <div class="alert alert-<%= message_type %>"><%= message %></div>
+      <% end %>
+    <% end %>
+  <% end %>
+
+			<div class="row">
+				<div class="col-sm-12">
+					<%= f.text_area :comment, rows:'5', class: "form-control",placeholder: "コメントを入力" %>
+				</div>
+			</div>
+			<%= f.submit "送信する", class: "btn btn-lg btn-base-1 mt-20 pull-right" %>
+			<% end %>
+			<!--新規コメント機能-->
+
+			<!--コメント表示機能-->
+			<div class="row">
+				<div class="col-sm-12">
+					<ol>
+						<% @book.book_comments.each do |book_comment| %>
+						<li>
+							<%= link_to "#{book_comment.user.name}",user_path(book_comment.user_id)%>
+							<span><%= book_comment.created_at.strftime('%Y/%m/%d %X') %></span>
+							<span><% if book_comment.user == current_user %>
+							<%= link_to " 削除", book_book_comments_path(book_comment), method: :delete, data: {confirm: "本当に削除してもよろしいですか？"}, class: "btn-sm btn-danger" %>
+							<% end %><span>
+							<div><%= book_comment.comment %></div><br>
+						</li>
+						<% end %>
+					</ol>
+				</div>
+			</div>
+			<!--コメント表示機能-->
 
 		</div>
 	</div>
