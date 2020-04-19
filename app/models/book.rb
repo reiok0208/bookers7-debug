@@ -12,4 +12,19 @@ class Book < ApplicationRecord
     favorites.where(user_id: user.id).exists?
   end
   
+  #検索機能
+  def self.search(method,word)
+    if method == "forward_match"
+      @books = Book.where("title LIKE?","#{word}%")
+    elsif method == "backward_match"
+      @books = Book.where("title LIKE?","%#{word}")
+    elsif method == "perfect_match"
+      @books = Book.where("title LIKE?","#{word}")
+    elsif method == "partial_match"
+      @books = Book.where("title LIKE?","%#{word}%")
+    else
+      @books = Book.all
+    end
+  end
+  #検索機能
 end

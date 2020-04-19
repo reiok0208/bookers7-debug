@@ -2,7 +2,7 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable,:validatable
+  :recoverable, :rememberable, :trackable,:validatable
 
   has_many :books
   has_many :favorites, dependent: :destroy
@@ -33,17 +33,19 @@ class User < ApplicationRecord
     passive_relationships.find_by(following_id: user.id).present?
   end
   
+  #検索機能
   def self.search(method,word)
-                if method == "forward_match"
-                        @users = User.where("name LIKE?","#{word}%")
-                elsif method == "backward_match"
-                        @users = User.where("name LIKE?","%#{word}")
-                elsif method == "perfect_match"
-                        @users = User.where("name LIKE?","#{word}")
-                elsif method == "partial_match"
-                        @users = User.where("name LIKE?","%#{word}%")
-                else
-                        @users = User.all
-                end
+    if method == "forward_match"
+      @users = User.where("name LIKE?","#{word}%")
+    elsif method == "backward_match"
+      @users = User.where("name LIKE?","%#{word}")
+    elsif method == "perfect_match"
+      @users = User.where("name LIKE?","#{word}")
+    elsif method == "partial_match"
+      @users = User.where("name LIKE?","%#{word}%")
+    else
+      @users = User.all
     end
+  end
+  #検索機能
 end
