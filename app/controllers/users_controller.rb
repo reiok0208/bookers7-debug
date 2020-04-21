@@ -13,6 +13,14 @@ class UsersController < ApplicationController
   def index
   	@users = User.all #一覧表示するためにUserモデルのデータを全て変数に入れて取り出す。
   	@book = Book.new #new bookの新規投稿で必要（保存処理はbookコントローラー側で実施）
+    
+    #検索機能
+    word = params[:search_word]
+    if word.nil?
+    else
+      redirect_to search_path
+    end
+    #検索機能
   end
 
   def edit
@@ -30,9 +38,19 @@ class UsersController < ApplicationController
   	end
   end
 
+  def follows
+    user = User.find(params[:id])
+    @users = user.followings
+  end
+
+  def followers
+    user = User.find(params[:id])
+    @users = user.followers
+  end
+
   private
   def user_params
-  	params.require(:user).permit(:name, :email, :introduction, :profile_image)
+  	params.require(:user).permit(:name, :email, :introduction, :profile_image, :postcode, :prefecture_name, :address_city, :address_street, :address_building)
   end
 
   #url直接防止　メソッドを自己定義してbefore_actionで発動。

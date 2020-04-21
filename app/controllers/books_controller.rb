@@ -8,11 +8,20 @@ class BooksController < ApplicationController
   	@book = Book.find(params[:id])
     @booknew = Book.new
     @user = @book.user
+    @commentnew = BookComment.new
   end
 
   def index
   	@books = Book.all #一覧表示するためにBookモデルの情報を全てくださいのall
     @book = Book.new
+
+    #検索機能
+    word = params[:search_word]
+    if word.nil?
+    else
+      redirect_to search_path
+    end
+    #検索機能
   end
 
   def create
